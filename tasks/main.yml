@@ -1,0 +1,24 @@
+---
+# tasks file for ansible-role-win-restic
+- name: restic - Download
+  win_get_url:
+    url: '{{ restic_download_url }}'
+    dest: 'C:\Windows\Temp\{{ restic_filename_zip }}'
+    force: no
+
+- name: restic - Unzip
+  win_unzip:
+    src: 'C:\Windows\Temp\{{ restic_filename_zip }}'
+    dest: 'C:\Windows\Temp\'
+    delete_archive: yes
+
+- name: restic - Copy to windir
+  win_copy:
+    src: 'C:\Windows\Temp\{{ restic_filename_exe }}'
+    dest: '{{ restic_install_folder }}\restic.exe'
+    remote_src: yes
+
+- name: restic - Delete unzipped file
+  win_file:
+    path: 'C:\Windows\Temp\{{ restic_filename_exe }}'
+    state: absent
